@@ -678,6 +678,8 @@ code, .mono {
   overflow-x: auto;
   margin: 20px 0;
   position: relative;
+  white-space: pre-wrap; /* Keeps formatting and newlines intact */
+  tab-size: 4;
 }
 .code-block .kw  { color: #86B4F0; }
 .code-block .fn  { color: #FFD080; }
@@ -851,4 +853,10 @@ code, .mono {
 .stagger-1 { transition-delay: .1s; }
 .stagger-2 { transition-delay: .2s; }
 .stagger-3 { transition-delay: .3s; }
-.stagger-4 { transition-delay: .4s; }
+.stagger-4 { transition-delay: .4s; }@media(prefers-color-scheme:dark){.fact .thead{background:color-mix(in srgb,#378ADD 18%,transparent);color:#B0D4FF}}
+.fact .thead .badge{background:color-mix(in srgb,#378ADD 25%,transparent);color:#05294D;font-weight:700}
+@media(prefers-color-scheme:dark){.fact .thead .badge{color:#B0D4FF}}
+.dim .thead{background:color-mix(in srgb,#1D9E75 10%,transparent);color:#063B2D;font-weight:700;}
+@media(prefers-color-scheme:dark){.dim .thead{background:color-mix(in srgb,#1D9E75 18%,transparent);color:#8EE3C6}}
+.dim .thead .badge{background:color-mix(in srgb,#1D9E75 22%,transparent);color:#063B2D;font-weight:700}
+@media(prefers-color-scheme:dark){.dim .thead .badge{color:#8EE3C6}}
