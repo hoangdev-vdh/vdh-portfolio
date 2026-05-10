@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio - VnExpress News Scraper</title>
+    <link rel="stylesheet" href="../assets/css/main.css">
+    <link rel="stylesheet" href="../assets/css/project-detail.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-tomorrow.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div id="header-placeholder"></div>
+
+    <main class="main">
+        <div class="container">
+            <div id="intro-placeholder"></div>
+
+            <section class="project-showcase">
+                <div class="project-card">
+                    <h3><i class="fas fa-newspaper"></i> VnExpress News Scraper</h3>
+                    
+                    <!-- Hình ảnh từ website gốc -->
+                    <div class="image-section">
+                        <h4>Website gốc:</h4>
+                        <div class="website-image">
+                            <img src="../assets/images/vnexpress_news/genres_web.png" alt="VnExpress Website">
+                            <p class="image-caption">Giao diện trang tin tức VnExpress với các chuyên mục</p>
+                        </div>
+                    </div>
+
+                    <!-- Code section -->
+                    <div class="code-section">
+                        <h4><i class="fas fa-code"></i> Mã nguồn Python:</h4>
+                        <div class="code-container">
+                            <button class="copy-btn" onclick="copyCode('code1')">
+                                <i class="fas fa-copy"></i> Copy
+                            </button>
+                            <pre><code id="code1" class="language-python">from selenium import webdriver
+from bs4 import BeautifulSoup
+import pandas as pd
+import time
+
+url = "https://vnexpress.net/"
+
+# Cấu hình Chrome options
+options = webdriver.ChromeOptions()
+options.add_argument("--disable-gpu")
+options.add_argument("--window-size=700,800")
+options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36")
+
+driver = webdriver.Chrome(options=options)
+driver.get(url)
+time.sleep(3)
+
+html = driver.page_source
+driver.quit()
+
+# Parse HTML với BeautifulSoup
+soup = BeautifulSoup(html, 'lxml')
+character_news = soup.find('div', class_='row-menu')
+
+data = []
+if character_news:
+    cat_menus = character_news.find_all('ul', class_='cat-menu')
+    for menu in cat_menus:
+        first_li = menu.find('li')
+        if first_li:
+            main_link = first_li.find('a')
+            if main_link:
+                main_name = main_link.get_text(strip=True)
+                main_href = main_link.get('href', '')
+                data.append({"Name": main_name, "Link": main_href, "Type": "Main"})
+        
+        # Các mục con
+        for li in menu.find_all('li')[1:]:
+            sub_link = li.find('a')
+            if sub_link:
+                sub_name = sub_link.get_text(strip=True)
+                sub_href = sub_link.get('href', '')
+                data.append({"Name": sub_name, "Link": sub_href, "Type": "Sub"})
+
+# Lưu dữ liệu ra CSV
+df = pd.DataFrame(data)
+df.to_csv("character_news_vnexpress.csv", index=False, encoding='utf-8-sig')</code></pre>
+                        </div>
+                    </div>
+
+                    <!-- Kết quả -->
+                    <div class="result-section">
+                        <h4><i class="fas fa-chart-bar"></i> Kết quả thu được:</h4>
+                        <div class="result-image">
+                            <img src="../assets/images/vnexpress_news/genres_csv.png" alt="Kết quả Excel">
+                            <p class="image-caption">Dữ liệu được trích xuất và lưu vào file CSV/Excel với các cột: Name, Link, Type</p>
+                        </div>
+                        
+                        <div class="stats">
+                            <!-- <div class="stat-item">
+                                <i class="fas fa-database"></i>
+                                <span class="stat-number">50+</span>
+                                <span class="stat-label">Danh mục được crawl</span>
+                            </div>
+                            <div class="stat-item">
+                                <i class="fas fa-link"></i>
+                                <span class="stat-number">100%</span>
+                                <span class="stat-label">Độ chính xác</span>
+                            </div>
+                            <div class="stat-item">
+                                <i class="fas fa-clock"></i>
+                                <span class="stat-number">3s</span>
+                                <span class="stat-label">Thời gian xử lý</span>
+                            </div> -->
+                        </div>
+                    </div>
+
+                    <div class="tech-stack">
+                        <h4>Công nghệ sử dụng:</h4>
+                        <div class="tech-tags">
+                            <span class="tech-tag python">Python</span>
+                            <span class="tech-tag selenium">Selenium</span>
+                            <span class="tech-tag bs4">BeautifulSoup</span>
+                            <span class="tech-tag pandas">Pandas</span>
+                            <span class="tech-tag csv">CSV Export</span>
+                        </div>
+                    </div>
+                </div>
+
+            <div id="additional-projects-placeholder"></div>
+            </section>
+
+            <section class="skills">
+                <h2><i class="fas fa-tools"></i> Kỹ năng chính</h2>
+                <div class="skills-grid">
+                    <div class="skill-item">
+                        <i class="fab fa-python"></i>
+                        <h4>Python Programming</h4>
+                        <p>Selenium, BeautifulSoup, Pandas, Requests</p>
+                    </div>
+                    <div class="skill-item">
+                        <i class="fas fa-spider"></i>
+                        <h4>Web Scraping</h4>
+                        <p>Data extraction, Browser automation, API integration</p>
+                    </div>
+                    <div class="skill-item">
+                        <i class="fas fa-database"></i>
+                        <h4>Data Processing</h4>
+                        <p>CSV, Excel, JSON, Data cleaning & transformation</p>
+                    </div>
+                    <div class="skill-item">
+                        <i class="fas fa-network-wired"></i>
+                        <h4>Wireshark</h4>
+                        <p>Network protocol analysis, Packet capturing, Traffic inspection</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-python.min.js"></script>
+    <script src="../assets/js/components.js"></script>
+    <script>
+        function copyCode(elementId) {
+            const code = document.getElementById(elementId).textContent;
+            navigator.clipboard.writeText(code).then(() => {
+                const btn = event.target.closest('.copy-btn');
+                const originalText = btn.innerHTML;
+                btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                btn.style.background = '#48bb78';
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                    btn.style.background = '';
+                }, 2000);
+            });
+        }
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Add animation on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.project-card, .skill-item').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(20px)';
+            el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(el);
+        });
+    </script>
+</body>
+</html>

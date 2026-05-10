@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio - Pinterest Image Downloader (Selenium)</title>
+    <link rel="stylesheet" href="../assets/css/main.css">
+    <link rel="stylesheet" href="../assets/css/project-detail.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-tomorrow.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+        .animate-on-scroll.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <div id="header-placeholder"></div>
+
+    <main class="main">
+        <div class="container">
+            <div id="intro-placeholder"></div>
+
+            <section class="project-showcase">
+                <div class="project-card">
+                    <h3><i class="fab fa-pinterest"></i> Pinterest Image Downloader - Selenium Version</h3>
+                    
+                    <!-- Tổng quan dự án -->
+                    <div class="image-section">
+                        <h4><i class="fas fa-info-circle"></i> Tổng quan dự án</h4>
+                        <p>Công cụ tự động hóa download hình ảnh từ Pinterest sử dụng Selenium WebDriver - framework browser automation phổ biến nhất. Dự án hỗ trợ đăng nhập tự động, infinite scroll để load tất cả ảnh trong board, và download hàng loạt ảnh chất lượng cao từ profile người dùng.</p>
+                    </div>
+
+                    <!-- Video Demo -->
+                    <div class="image-section">
+                        <h4><i class="fas fa-video"></i> Video Demo:</h4>
+                        <div class="video-container" style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; border-radius: 8px;">
+                            <iframe 
+                                src="https://www.youtube.com/embed/ClWU1VOOm5A" 
+                                title="Pinterest Downloader Selenium Demo"
+                                style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; border-radius: 8px;"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                allowfullscreen>
+                            </iframe>
+                        </div>
+                        <p class="image-caption">Video demo quá trình tự động download ảnh từ Pinterest</p>
+                    </div>
+
+                    <!-- Statistics -->
+                    <div class="stats">
+                        <div class="stat-item">
+                            <i class="fas fa-chrome"></i>
+                            <span class="stat-number">Chrome</span>
+                            <span class="stat-label">WebDriver</span>
+                        </div>
+                        <div class="stat-item">
+                            <i class="fas fa-scroll"></i>
+                            <span class="stat-number">Auto</span>
+                            <span class="stat-label">Infinite Scroll</span>
+                        </div>
+                        <div class="stat-item">
+                            <i class="fas fa-clock"></i>
+                            <span class="stat-number">20s</span>
+                            <span class="stat-label">Wait Timeout</span>
+                        </div>
+                        <div class="stat-item">
+                            <i class="fas fa-images"></i>
+                            <span class="stat-number">4x</span>
+                            <span class="stat-label">Resolution</span>
+                        </div>
+                    </div>
+
+                    <!-- Main Entry Point -->
+                    <div class="code-section">
+                        <h4><i class="fas fa-play"></i> Main Entry Point (main.py)</h4>
+                        <div class="code-container">
+                            <button class="copy-btn" onclick="copyCode('code1')">
+                                <i class="fas fa-copy"></i> Copy
+                            </button>
+                            <pre><code id="code1" class="language-python">from src.core.pinterest_scraper import PinterestScraper
+from src.utils.file_utils import check_folder_exists
+from src import config
+
+def main():
+    """Main function to run the Pinterest image downloader."""
+    print("--- Pinterest Image Downloader ---")
+
+    # Validate credentials are set
+    if not config.USERNAME or not config.PASSWORD or "default" in config.USERNAME:
+        print("\nERROR: Pinterest credentials are not set.")
+        print("Please create a '.env' file in the root directory with:")
+        print("PINTEREST_USERNAME=your_email@example.com")
+        print("PINTEREST_PASSWORD=your_password")
+        return
+
+    # Get folder name from user
+    while True:
+        folder_name_temp = input("Enter a base name for the download folders: ")
+        if not folder_name_temp:
+            print("Folder name cannot be empty.")
+            continue
+        
+        if check_folder_exists(f"{folder_name_temp}_*"):
+            print("Warning: Folders with this base name might already exist.")
+        break
+    
+    # Initialize and run the scraper
+    scraper = PinterestScraper(username=config.USERNAME, password=config.PASSWORD)
+    scraper.run(base_folder_name=folder_name_temp)
+
+    print("\n--- Process Finished ---")
+
+if __name__ == "__main__":
+    main()</code></pre>
+                        </div>
+                    </div>
+
+                    <!-- Pinterest Scraper -->
+                    <div class="code-section">
+                        <h4><i class="fas fa-spider"></i> Pinterest Scraper (pinterest_scraper.py)</h4>
+                        <div class="code-container">
+                            <button class="copy-btn" onclick="copyCode('code2')">
+                                <i class="fas fa-copy"></i> Copy
+                            </button>
+                            <pre><code id="code2" class="language-python">from time import sleep
+from bs4 import BeautifulSoup
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from src import config
+from src.core.downloader import ImageDownloader
+
+class PinterestScraper:
+    """A Selenium-based scraper for downloading images from Pinterest boards."""
+    
+    def __init__(self, username, password):
+        self.username = username
+        self.password = password
+        self.downloader = ImageDownloader()
+        self.driver = self._setup_driver()
+
+    def _setup_driver(self):
+        """Initializes and configures the Chrome WebDriver."""
+        options = Options()
+        options.add_argument(f"user-agent={config.USER_AGENT}")
+        options.add_argument(f"window-size={config.WINDOW_SIZE}")
+        options.add_argument("--disable-notifications")
+        driver = webdriver.Chrome(options=options)
+        driver.implicitly_wait(config.IMPLICIT_WAIT_TIME)
+        return driver
+
+    def login(self):
+        """Logs into Pinterest."""
+        print("Navigating to Pinterest and logging in...")
+        self.driver.get(config.BASE_URL)
+        wait = WebDriverWait(self.driver, config.EXPLICIT_WAIT_TIMEOUT)
+        
+        # Click login button
+        login_button = wait.until(EC.element_to_be_clickable(
+            (By.CSS_SELECTOR, config.LOGIN_BUTTON_SELECTOR)))
+        login_button.click()
+
+        # Enter credentials
+        email_field = wait.until(EC.presence_of_element_located(
+            (By.ID, config.EMAIL_INPUT_ID)))
+        email_field.send_keys(self.username)
+
+        password_field = self.driver.find_element(By.ID, config.PASSWORD_INPUT_ID)
+        password_field.send_keys(self.password)
+        password_field.send_keys(Keys.RETURN)
+        
+        # Wait for login to complete
+        wait.until(EC.element_to_be_clickable(
+            (By.CSS_SELECTOR, config.AVATAR_SELECTOR)))
+        print("Login successful.")</code></pre>
+                        </div>
+                    </div>
+
+                    <!-- Infinite Scroll -->
+                    <div class="code-section">
+                        <h4><i class="fas fa-scroll"></i> Infinite Scroll & Image Extraction</h4>
+                        <div class="code-container">
+                            <button class="copy-btn" onclick="copyCode('code3')">
+                                <i class="fas fa-copy"></i> Copy
+                            </button>
+                            <pre><code id="code3" class="language-python">def scrape_images_from_board(self, board_name):
+    """Navigates to a board and scrapes all image URLs with infinite scroll."""
+    print(f"\n--- Starting scrape for board: {board_name} ---")
+    image_urls = []
+    
+    # Navigate to the board
+    board_link = self.driver.find_element(By.XPATH, f"//h2[text()='{board_name}']")
+    board_link.click()
+    sleep(random.uniform(*config.MEDIUM_WAIT))
+
+    # Scroll down to load all images
+    scroll_pause_time = 2
+    no_change_count = 0
+    max_no_change = 5  # Stop after 5 consecutive scrolls with no new height
+    
+    while True:
+        last_height = self.driver.execute_script("return document.body.scrollHeight")
+        
+        # Scroll down 1000px
+        self.driver.execute_script("window.scrollBy(0, 1000);")
+        sleep(scroll_pause_time + random.uniform(0.5, 1.5))
+        
+        # Collect images from current page state
+        soup = BeautifulSoup(self.driver.page_source, 'html.parser')
+        images = soup.select(config.IMAGE_SELECTOR)
+        
+        for image in images:
+            if image.get('srcset'):
+                image_urls.append(image['srcset'])
+        
+        new_height = self.driver.execute_script("return document.body.scrollHeight")
+        print(f"Scrolled: {len(set(image_urls))} unique images found.")
+        
+        if new_height == last_height:
+            no_change_count += 1
+            if no_change_count >= max_no_change:
+                print("Reached the end of the page.")
+                break
+        else:
+            no_change_count = 0
+    
+    return list(set(image_urls))</code></pre>
+                        </div>
+                    </div>
+
+                    <!-- Image Downloader -->
+                    <div class="code-section">
+                        <h4><i class="fas fa-download"></i> Image Downloader (downloader.py)</h4>
+                        <div class="code-container">
+                            <button class="copy-btn" onclick="copyCode('code4')">
+                                <i class="fas fa-copy"></i> Copy
+                            </button>
+                            <pre><code id="code4" class="language-python">import urllib.request
+from src.utils.file_utils import log_urls
+from src.config import DOWNLOADED_LOG, NOT_DOWNLOADED_LOG
+import os
+
+class ImageDownloader:
+    """Handles downloading images and logging results."""
+
+    def download_images(self, image_urls, folder_name):
+        """Downloads images from a list of URLs into a specified folder."""
+        downloaded_urls = []
+        not_downloaded_urls = []
+
+        unique_urls = sorted(list(set(image_urls)))
+        print(f"\nFound {len(unique_urls)} unique images to download.")
+
+        for url in unique_urls:
+            try:
+                # The last URL in srcset is the highest resolution (4x)
+                highest_res_url = url.split(',')[-1].replace(' 4x', '').strip()
+                filename = highest_res_url.split('/')[-1].split('?')[0]
+                
+                print(f"Downloading: {filename}")
+                urllib.request.urlretrieve(
+                    highest_res_url, 
+                    os.path.join(folder_name, filename)
+                )
+                downloaded_urls.append(highest_res_url)
+            except Exception as e:
+                print(f"Error downloading: {e}")
+                not_downloaded_urls.append(highest_res_url)
+
+        # Log results
+        log_urls(DOWNLOADED_LOG, downloaded_urls)
+        log_urls(NOT_DOWNLOADED_LOG, not_downloaded_urls)
+
+        print(f"Finished: {len(downloaded_urls)} succeeded, {len(not_downloaded_urls)} failed.")</code></pre>
+                        </div>
+                    </div>
+
+                    <!-- Config -->
+                    <div class="code-section">
+                        <h4><i class="fas fa-cog"></i> Configuration (config.py)</h4>
+                        <div class="code-container">
+                            <button class="copy-btn" onclick="copyCode('code5')">
+                                <i class="fas fa-copy"></i> Copy
+                            </button>
+                            <pre><code id="code5" class="language-python">import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+# --- Credentials ---
+USERNAME = os.getenv("PINTEREST_USERNAME", "default_user@example.com")
+PASSWORD = os.getenv("PINTEREST_PASSWORD", "default_password")
+
+# --- WebDriver Settings ---
+USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+WINDOW_SIZE = "1200,800"
+
+# --- Pinterest Selectors ---
+BASE_URL = "https://www.pinterest.com"
+LOGIN_BUTTON_SELECTOR = "div[data-test-id='simple-login-button']"
+EMAIL_INPUT_ID = "email"
+PASSWORD_INPUT_ID = "password"
+AVATAR_SELECTOR = "div[data-test-id='gestalt-avatar-svg']"
+BOARD_TITLE_SELECTOR = "div[data-test-id='board-card-title'] h2"
+IMAGE_SELECTOR = "img[srcset]"
+
+# --- Timing ---
+SHORT_WAIT = (2, 4)
+MEDIUM_WAIT = (3, 5)
+IMPLICIT_WAIT_TIME = 10
+EXPLICIT_WAIT_TIMEOUT = 20</code></pre>
+                        </div>
+                    </div>
+
+                    <!-- Tech Stack -->
+                    <div class="tech-stack">
+                        <h4>Công nghệ sử dụng:</h4>
+                        <div class="tech-tags">
+                            <span class="tech-tag python">Python</span>
+                            <span class="tech-tag selenium">Selenium</span>
+                            <span class="tech-tag bs4">BeautifulSoup</span>
+                            <span class="tech-tag chrome">Chrome WebDriver</span>
+                            <span class="tech-tag dotenv">python-dotenv</span>
+                        </div>
+                    </div>
+
+                    <!-- Features List -->
+                    <div class="result-section">
+                        <h4><i class="fas fa-list-check"></i> Tính năng nổi bật:</h4>
+                        <ul style="color: var(--text-secondary); line-height: 1.8; padding-left: 20px;">
+                            <li><strong>Selenium WebDriver:</strong> Framework automation phổ biến, dễ học và sử dụng</li>
+                            <li><strong>Infinite Scroll:</strong> Tự động scroll để load tất cả ảnh trong board</li>
+                            <li><strong>BeautifulSoup:</strong> Parse HTML hiệu quả để extract image URLs</li>
+                            <li><strong>High Resolution:</strong> Tự động chọn ảnh có độ phân giải cao nhất (4x)</li>
+                            <li><strong>Explicit/Implicit Waits:</strong> Đợi elements load đúng cách</li>
+                            <li><strong>Download Logging:</strong> Ghi lại URLs đã download và lỗi</li>
+                        </ul>
+                    </div>
+
+                    <!-- Result Images Gallery -->
+                    <div class="result-section">
+                        <h4><i class="fas fa-images"></i> Kết quả thu được:</h4>
+                        <div class="image-gallery" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-top: 1rem;">
+                            <div class="gallery-item">
+                                <img src="../assets/images/pinterest_download_selenium/console_download.png" alt="Console Download" style="width: 100%; border-radius: 8px; border: 1px solid var(--border-color);">
+                                <p class="image-caption">Console log quá trình download ảnh</p>
+                            </div>
+                            <div class="gallery-item">
+                                <img src="../assets/images/pinterest_download_selenium/folders.png" alt="Downloaded Folders" style="width: 100%; border-radius: 8px; border: 1px solid var(--border-color);">
+                                <p class="image-caption">Các thư mục chứa ảnh đã download</p>
+                            </div>
+                            <div class="gallery-item" style="grid-column: span 2;">
+                                <img src="../assets/images/pinterest_download_selenium/txt_static.png" alt="Download Logs" style="width: 100%; border-radius: 8px; border: 1px solid var(--border-color);">
+                                <p class="image-caption">File log URLs đã download</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="additional-projects-placeholder"></div>
+            </section>
+
+            <section class="skills">
+                <h2><i class="fas fa-tools"></i> Kỹ năng chính</h2>
+                <div class="skills-grid">
+                    <div class="skill-item">
+                        <i class="fab fa-python"></i>
+                        <h4>Python Programming</h4>
+                        <p>Selenium, BeautifulSoup, urllib, Requests</p>
+                    </div>
+                    <div class="skill-item">
+                        <i class="fas fa-spider"></i>
+                        <h4>Web Scraping</h4>
+                        <p>Browser automation, HTML parsing, Data extraction</p>
+                    </div>
+                    <div class="skill-item">
+                        <i class="fas fa-scroll"></i>
+                        <h4>Infinite Scroll</h4>
+                        <p>Dynamic content loading, JavaScript execution</p>
+                    </div>
+                    <div class="skill-item">
+                        <i class="fas fa-download"></i>
+                        <h4>Batch Download</h4>
+                        <p>URL extraction, File management, Error handling</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-python.min.js"></script>
+    <script src="../assets/js/components.js"></script>
+    <script>
+        function copyCode(elementId) {
+            const code = document.getElementById(elementId).textContent;
+            navigator.clipboard.writeText(code).then(() => {
+                const btn = event.target.closest('.copy-btn');
+                const originalText = btn.innerHTML;
+                btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                btn.style.background = '#48bb78';
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                    btn.style.background = '';
+                }, 2000);
+            });
+        }
+
+        // Add animation on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.skill-item').forEach(el => {
+            el.classList.add('animate-on-scroll');
+            observer.observe(el);
+        });
+
+        // Make main project card visible immediately
+        document.querySelectorAll('.project-showcase > .project-card').forEach(el => {
+            el.style.opacity = '1';
+            el.style.transform = 'translateY(0)';
+        });
+    </script>
+</body>
+</html>

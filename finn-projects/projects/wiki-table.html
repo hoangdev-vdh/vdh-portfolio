@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio - Wikipedia Table Scraper & Data Cleaning</title>
+    <link rel="stylesheet" href="../assets/css/main.css">
+    <link rel="stylesheet" href="../assets/css/project-detail.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-tomorrow.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div id="header-placeholder"></div>
+
+    <main class="main">
+        <div class="container">
+            <div id="intro-placeholder"></div>
+
+            <section class="project-showcase">
+                <div class="project-card">
+                    <h3><i class="fas fa-table"></i> Wikipedia Olympic Medal Table Scraper</h3>
+                    
+                    <!-- Hình ảnh từ website gốc -->
+                    <div class="image-section">
+                        <h4>Website gốc:</h4>
+                        <div class="website-image">
+                            <img src="../assets/images/table_wiki/wiki_web.png" alt="Wikipedia Olympic Medal Table">
+                            <p class="image-caption">Trang Wikipedia chứa bảng huy chương Olympic Tokyo 2020</p>
+                        </div>
+                    </div>
+
+                    <!-- Code section -->
+                    <div class="code-section">
+                        <h4><i class="fas fa-code"></i> Mã nguồn Python:</h4>
+                        <div class="code-container">
+                            <button class="copy-btn" onclick="copyCode('code1')">
+                                <i class="fas fa-copy"></i> Copy
+                            </button>
+                            <pre><code id="code1" class="language-python">import requests
+from bs4 import BeautifulSoup
+import csv
+
+url = 'https://en.wikipedia.org/wiki/2020_Summer_Olympics_medal_table'
+
+useragent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3"
+
+headers = {
+    'User-Agent': useragent
+}
+
+response = requests.get(url, headers=headers)
+
+if response.status_code == 200:
+    soup = BeautifulSoup(response.content, 'html.parser')
+    table = soup.find('table', {'class': 'wikitable sortable sticky-header-multi plainrowheaders jquery-tablesorter'})
+    
+    data = []
+    for row in table.find_all('tr'):
+        cols = row.find_all(['th', 'td'])
+        cols = [col.text.strip() for col in cols]
+        data.append(cols)
+    
+    with open('olympic_medal_table.csv', 'w', newline='', encoding='utf-8') as file:
+        writer = csv.writer(file)
+        writer.writerows(data)
+    
+    print("Finished")
+else:
+    print(f'Failed to retrieve the webpage. Status code: {response.status_code}')</code></pre>
+                        </div>
+                    </div>
+
+                    <!-- Data Cleaning Code -->
+                    <div class="code-section">
+                        <h4><i class="fas fa-broom"></i> Mã làm sạch dữ liệu (clean.py):</h4>
+                        <div class="code-container">
+                            <button class="copy-btn" onclick="copyCode('code2')">
+                                <i class="fas fa-copy"></i> Copy
+                            </button>
+                            <pre><code id="code2" class="language-python">import csv
+
+def process_csv(input_file, output_file):
+    with open(input_file, mode='r', encoding='utf-8') as infile, open(output_file, mode='w', encoding='utf-8', newline='') as outfile:
+        reader = csv.reader(infile)
+        writer = csv.writer(outfile)
+        
+        previous_row = None
+        for row in reader:
+            if len(row) == 5:
+                if previous_row:
+                    row.insert(0, previous_row[0])
+            writer.writerow(row)
+            previous_row = row
+
+input_file = 'olympic_medal_table.csv'
+output_file = 'olympic_medal_table_cleaned.csv'
+process_csv(input_file, output_file)</code></pre>
+                        </div>
+                    </div>
+
+                    <!-- Kết quả -->
+                    <div class="result-section">
+                        <h4><i class="fas fa-chart-bar"></i> Kết quả thu được:</h4>
+                        <div class="result-image">
+                            <img src="../assets/images/table_wiki/wiki_csv_cleaned.png" alt="Kết quả CSV Olympic">
+                            <p class="image-caption">Dữ liệu bảng huy chương Olympic được trích xuất và làm sạch thành file CSV với các cột: Rank, Country, Gold, Silver, Bronze, Total</p>
+                        </div>
+                        
+                        <div class="stats">
+                            <div class="stat-item">
+                                <i class="fas fa-flag"></i>
+                                <span class="stat-number">90+</span>
+                                <span class="stat-label">Quốc gia tham gia</span>
+                            </div>
+                            <div class="stat-item">
+                                <i class="fas fa-medal"></i>
+                                <span class="stat-number">1000+</span>
+                                <span class="stat-label">Huy chương được ghi</span>
+                            </div>
+                            <div class="stat-item">
+                                <i class="fas fa-table"></i>
+                                <span class="stat-number">6</span>
+                                <span class="stat-label">Cột dữ liệu</span>
+                            </div>
+                            <div class="stat-item">
+                                <i class="fas fa-check-circle"></i>
+                                <span class="stat-number">100%</span>
+                                <span class="stat-label">Độ chính xác</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tech-stack">
+                        <h4>Công nghệ sử dụng:</h4>
+                        <div class="tech-tags">
+                            <span class="tech-tag python">Python</span>
+                            <span class="tech-tag requests">Requests</span>
+                            <span class="tech-tag bs4">BeautifulSoup</span>
+                            <span class="tech-tag csv">CSV Processing</span>
+                            <span class="tech-tag data-cleaning">Data Cleaning</span>
+                            <span class="tech-tag wikipedia">Wikipedia API</span>
+                        </div>
+                    </div>
+                </div>
+
+            <div id="additional-projects-placeholder"></div>
+            </section>
+
+            <section class="skills">
+                <h2><i class="fas fa-tools"></i> Kỹ năng chính</h2>
+                <div class="skills-grid">
+                    <div class="skill-item">
+                        <i class="fab fa-python"></i>
+                        <h4>Python Programming</h4>
+                        <p>Selenium, BeautifulSoup, Pandas, Requests</p>
+                    </div>
+                    <div class="skill-item">
+                        <i class="fas fa-spider"></i>
+                        <h4>Web Scraping</h4>
+                        <p>Data extraction, Browser automation, API integration</p>
+                    </div>
+                    <div class="skill-item">
+                        <i class="fas fa-database"></i>
+                        <h4>Data Processing</h4>
+                        <p>CSV, Excel, JSON, Data cleaning & transformation</p>
+                    </div>
+                    <div class="skill-item">
+                        <i class="fas fa-network-wired"></i>
+                        <h4>Wireshark</h4>
+                        <p>Network protocol analysis, Packet capturing, Traffic inspection</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-python.min.js"></script>
+    <script src="../assets/js/components.js"></script>
+    <script>
+        function copyCode(elementId) {
+            const code = document.getElementById(elementId).textContent;
+            navigator.clipboard.writeText(code).then(() => {
+                const btn = event.target.closest('.copy-btn');
+                const originalText = btn.innerHTML;
+                btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                btn.style.background = '#48bb78';
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                    btn.style.background = '';
+                }, 2000);
+            });
+        }
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Add animation on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.project-card, .skill-item').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(20px)';
+            el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(el);
+        });
+    </script>
+</body>
+</html>

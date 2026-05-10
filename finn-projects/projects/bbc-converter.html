@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio - BBC News to DOCX Converter</title>
+    <link rel="stylesheet" href="../assets/css/main.css">
+    <link rel="stylesheet" href="../assets/css/project-detail.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-tomorrow.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div id="header-placeholder"></div>
+
+    <main class="main">
+        <div class="container">
+            <div id="intro-placeholder"></div>
+
+            <section class="project-showcase">
+                <div class="project-card">
+                    <h3><i class="fas fa-file-word"></i> BBC News to DOCX Converter</h3>
+                    
+                    <!-- Hình ảnh từ website gốc -->
+                    <div class="image-section">
+                        <h4>Website gốc:</h4>
+                        <div class="website-image">
+                            <img src="../assets/images/bbc/bbc_web.png" alt="BBC Travel Article">
+                            <p class="image-caption">Trang bài viết BBC Travel với hình ảnh và nội dung phong phú</p>
+                        </div>
+                    </div>
+
+                    <!-- Code section -->
+                    <div class="code-section">
+                        <h4><i class="fas fa-code"></i> Mã nguồn Python:</h4>
+                        <div class="code-container">
+                            <button class="copy-btn" onclick="copyCode('code1')">
+                                <i class="fas fa-copy"></i> Copy
+                            </button>
+                            <pre><code id="code1" class="language-python">import requests
+from bs4 import BeautifulSoup
+from docx import Document
+from docx.shared import Inches
+from PIL import Image
+from io import BytesIO
+
+url = "https://www.bbc.com/travel/article/20230313-the-slowest-train-journey-in-india"
+headers = {
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36"
+}
+
+response = requests.get(url, headers=headers)
+soup = BeautifulSoup(response.text, "html.parser")
+
+doc = Document()
+
+article = soup.find("article")
+if not article:
+    print("Cannot find article!")
+    exit()
+
+title = article.find("h1")
+if title:
+    doc.add_heading(title.get_text(strip=True), level=0)
+
+# Description
+desc = article.find("p", class_="ssrcss-1q0x1qg-Paragraph")
+if desc:
+    doc.add_paragraph(desc.get_text(strip=True))
+
+# Get content and images
+for elem in article.find_all(["h2", "h3", "p", "figure"], recursive=True):
+    if elem.get("data-component") in ["tag-list-block", "advertisement-block"]:
+        break
+
+    if elem.name in ["h2", "h3"]:
+        text = elem.get_text(strip=True)
+        if text:
+            doc.add_heading(text, level=2)
+
+    elif elem.name == "p":
+        text = elem.get_text(strip=True)
+        if text:
+            doc.add_paragraph(text)
+
+    elif elem.name == "figure":
+        img_tag = elem.find("img", {"srcset": True})
+        if img_tag:
+            srcset = img_tag["srcset"]
+            img_url = srcset.split(",")[-1].strip().split(" ")[0]
+            print("Ảnh gốc:", img_url)
+
+            # Download image
+            img_res = requests.get(img_url)
+            image = Image.open(BytesIO(img_res.content))
+
+            # Convert to JPEG for Word
+            img_io = BytesIO()
+            image.convert("RGB").save(img_io, format="JPEG")
+            img_io.seek(0)
+
+            # Insert image into Word
+            doc.add_picture(img_io, width=Inches(4))
+
+        caption = elem.find("figcaption")
+        if caption:
+            para = doc.add_paragraph(caption.get_text(strip=True))
+            if para.runs:
+                para.runs[0].italic = True
+
+# Save Word file
+doc.save("bbc_article.docx")
+print("Finished Saving")</code></pre>
+                        </div>
+                    </div>
+
+                    <!-- Kết quả -->
+                    <div class="result-section">
+                        <h4><i class="fas fa-file-word"></i> Kết quả thu được:</h4>
+                        <div class="result-image">
+                            <img src="../assets/images/bbc/bbc_word.png" alt="Kết quả DOCX File">
+                            <p class="image-caption">File DOCX hoàn chỉnh với tiêu đề, nội dung, hình ảnh và caption được định dạng chuyên nghiệp</p>
+                        </div>
+                        
+                        <div class="stats">
+                            <div class="stat-item">
+                                <i class="fas fa-newspaper"></i>
+                                <span class="stat-number">100%</span>
+                                <span class="stat-label">Nội dung được bảo toàn</span>
+                            </div>
+                            <div class="stat-item">
+                                <i class="fas fa-images"></i>
+                                <span class="stat-number">All</span>
+                                <span class="stat-label">Hình ảnh được tải</span>
+                            </div>
+                            <div class="stat-item">
+                                <i class="fas fa-file-word"></i>
+                                <span class="stat-number">DOCX</span>
+                                <span class="stat-label">Định dạng xuất</span>
+                            </div>
+                            <div class="stat-item">
+                                <i class="fas fa-paint-brush"></i>
+                                <span class="stat-number">Auto</span>
+                                <span class="stat-label">Định dạng styling</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tech-stack">
+                        <h4>Công nghệ sử dụng:</h4>
+                        <div class="tech-tags">
+                            <span class="tech-tag python">Python</span>
+                            <span class="tech-tag requests">Requests</span>
+                            <span class="tech-tag bs4">BeautifulSoup</span>
+                            <span class="tech-tag docx">python-docx</span>
+                            <span class="tech-tag pillow">Pillow (PIL)</span>
+                            <span class="tech-tag bbc">BBC News</span>
+                        </div>
+                    </div>
+                </div>
+
+            <div id="additional-projects-placeholder"></div>
+            </section>
+
+            <section class="skills">
+                <h2><i class="fas fa-tools"></i> Kỹ năng chính</h2>
+                <div class="skills-grid">
+                    <div class="skill-item">
+                        <i class="fab fa-python"></i>
+                        <h4>Python Programming</h4>
+                        <p>Selenium, BeautifulSoup, Pandas, Requests</p>
+                    </div>
+                    <div class="skill-item">
+                        <i class="fas fa-spider"></i>
+                        <h4>Web Scraping</h4>
+                        <p>Data extraction, Browser automation, API integration</p>
+                    </div>
+                    <div class="skill-item">
+                        <i class="fas fa-database"></i>
+                        <h4>Data Processing</h4>
+                        <p>CSV, Excel, JSON, Data cleaning & transformation</p>
+                    </div>
+                    <div class="skill-item">
+                        <i class="fas fa-network-wired"></i>
+                        <h4>Wireshark</h4>
+                        <p>Network protocol analysis, Packet capturing, Traffic inspection</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-python.min.js"></script>
+    <script src="../assets/js/components.js"></script>
+    <script>
+        function copyCode(elementId) {
+            const code = document.getElementById(elementId).textContent;
+            navigator.clipboard.writeText(code).then(() => {
+                const btn = event.target.closest('.copy-btn');
+                const originalText = btn.innerHTML;
+                btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                btn.style.background = '#48bb78';
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                    btn.style.background = '';
+                }, 2000);
+            });
+        }
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Add animation on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.project-card, .skill-item').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(20px)';
+            el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(el);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio - TopDev Job Scraper</title>
+    <link rel="stylesheet" href="../assets/css/main.css">
+    <link rel="stylesheet" href="../assets/css/project-detail.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-tomorrow.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div id="header-placeholder"></div>
+
+    <main class="main">
+        <div class="container">
+            <div id="intro-placeholder"></div>
+
+            <section class="project-showcase">
+                <div class="project-card">
+                    <h3><i class="fas fa-briefcase"></i> TopDev Job Scraper</h3>
+
+                    <!-- Trang đăng nhập -->
+                    <div class="image-section">
+                        <h4><i class="fas fa-sign-in-alt"></i> Trang đăng nhập:</h4>
+                        <div class="website-image">
+                            <img src="../assets/images/topdev/topdev_login.png" alt="TopDev Login Page">
+                            <p class="image-caption">Giao diện đăng nhập TopDev trước khi thực hiện scraping</p>
+                        </div>
+                    </div>
+
+                    <!-- Website gốc -->
+                    <div class="image-section">
+                        <h4><i class="fas fa-globe"></i> Website gốc:</h4>
+                        <div class="website-image">
+                            <img src="../assets/images/topdev/topdev_web.png" alt="TopDev Website">
+                            <p class="image-caption">Giao diện trang tuyển dụng TopDev với danh sách việc làm IT</p>
+                        </div>
+                    </div>
+
+                    <!-- Quá trình chạy -->
+                    <div class="image-section">
+                        <h4><i class="fas fa-terminal"></i> Quá trình thực thi:</h4>
+                        <div class="website-image">
+                            <img src="../assets/images/topdev/topdev_cmd.png" alt="TopDev CMD Output">
+                            <p class="image-caption">Terminal hiển thị quá trình scraping dữ liệu từ TopDev</p>
+                        </div>
+                    </div>
+
+                    <!-- Kết quả -->
+                    <div class="result-section">
+                        <h4><i class="fas fa-chart-bar"></i> Kết quả thu được:</h4>
+                        <div class="result-image">
+                            <img src="../assets/images/topdev/topdev_excel.png" alt="TopDev Excel Result">
+                            <p class="image-caption">Dữ liệu việc làm IT được trích xuất và lưu vào file Excel</p>
+                        </div>
+
+                        <div class="stats">
+                            <div class="stat-item">
+                                <i class="fas fa-briefcase"></i>
+                                <span class="stat-number">Jobs</span>
+                                <span class="stat-label">Việc làm được crawl</span>
+                            </div>
+                            <div class="stat-item">
+                                <i class="fas fa-building"></i>
+                                <span class="stat-number">IT</span>
+                                <span class="stat-label">Lĩnh vực tuyển dụng</span>
+                            </div>
+                            <div class="stat-item">
+                                <i class="fas fa-file-excel"></i>
+                                <span class="stat-number">Excel</span>
+                                <span class="stat-label">Định dạng xuất</span>
+                            </div>
+                            <div class="stat-item">
+                                <i class="fas fa-robot"></i>
+                                <span class="stat-number">Auto</span>
+                                <span class="stat-label">Tự động hóa</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tech-stack">
+                        <h4>Công nghệ sử dụng:</h4>
+                        <div class="tech-tags">
+                            <span class="tech-tag python">Python</span>
+                            <span class="tech-tag selenium">Selenium</span>
+                            <span class="tech-tag bs4">BeautifulSoup</span>
+                            <span class="tech-tag pandas">Pandas</span>
+                            <span class="tech-tag">Excel Export</span>
+                        </div>
+                    </div>
+                </div>
+
+            <div id="additional-projects-placeholder"></div>
+            </section>
+
+            <section class="skills">
+                <h2><i class="fas fa-tools"></i> Kỹ năng chính</h2>
+                <div class="skills-grid">
+                    <div class="skill-item">
+                        <i class="fab fa-python"></i>
+                        <h4>Python Programming</h4>
+                        <p>Selenium, BeautifulSoup, Pandas, Requests</p>
+                    </div>
+                    <div class="skill-item">
+                        <i class="fas fa-spider"></i>
+                        <h4>Web Scraping</h4>
+                        <p>Data extraction, Browser automation, API integration</p>
+                    </div>
+                    <div class="skill-item">
+                        <i class="fas fa-database"></i>
+                        <h4>Data Processing</h4>
+                        <p>CSV, Excel, JSON, Data cleaning & transformation</p>
+                    </div>
+                    <div class="skill-item">
+                        <i class="fas fa-network-wired"></i>
+                        <h4>Wireshark</h4>
+                        <p>Network protocol analysis, Packet capturing, Traffic inspection</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-python.min.js"></script>
+    <script src="../assets/js/components.js"></script>
+    <script>
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Add animation on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.project-card, .skill-item').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(20px)';
+            el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(el);
+        });
+    </script>
+</body>
+</html>

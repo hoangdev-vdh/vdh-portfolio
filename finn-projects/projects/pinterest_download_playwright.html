@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio - Pinterest Image Downloader (Playwright)</title>
+    <link rel="stylesheet" href="../assets/css/main.css">
+    <link rel="stylesheet" href="../assets/css/project-detail.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-tomorrow.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+        .animate-on-scroll.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <div id="header-placeholder"></div>
+
+    <main class="main">
+        <div class="container">
+            <div id="intro-placeholder"></div>
+
+            <section class="project-showcase">
+                <div class="project-card">
+                    <h3><i class="fab fa-pinterest"></i> Pinterest Image Downloader - Playwright Version</h3>
+                    
+                    <!-- Tổng quan dự án -->
+                    <div class="image-section">
+                        <h4><i class="fas fa-info-circle"></i> Tổng quan dự án</h4>
+                        <p>Công cụ tự động hóa download hình ảnh từ Pinterest sử dụng Playwright - một framework browser automation hiện đại với khả năng async/await, auto-wait và ghi lại video quá trình thực thi. Dự án hỗ trợ đăng nhập tự động, duyệt qua các board và tải xuống hình ảnh chất lượng cao với parallel processing.</p>
+                    </div>
+
+                    <!-- Video Demo -->
+                    <div class="image-section">
+                        <h4><i class="fas fa-video"></i> Video Demo:</h4>
+                        <div class="video-container" style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; border-radius: 8px;">
+                            <iframe 
+                                src="https://www.youtube.com/embed/ClWU1VOOm5A" 
+                                title="Pinterest Downloader Playwright Demo"
+                                style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; border-radius: 8px;"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                allowfullscreen>
+                            </iframe>
+                        </div>
+                        <p class="image-caption">Video demo quá trình tự động download ảnh từ Pinterest</p>
+                    </div>
+
+                    <!-- Statistics -->
+                    <div class="stats">
+                        <div class="stat-item">
+                            <i class="fas fa-bolt"></i>
+                            <span class="stat-number">Async</span>
+                            <span class="stat-label">Processing Mode</span>
+                        </div>
+                        <div class="stat-item">
+                            <i class="fas fa-video"></i>
+                            <span class="stat-number">Auto</span>
+                            <span class="stat-label">Video Recording</span>
+                        </div>
+                        <div class="stat-item">
+                            <i class="fas fa-download"></i>
+                            <span class="stat-number">5</span>
+                            <span class="stat-label">Parallel Workers</span>
+                        </div>
+                        <div class="stat-item">
+                            <i class="fas fa-images"></i>
+                            <span class="stat-number">4x</span>
+                            <span class="stat-label">Resolution</span>
+                        </div>
+                    </div>
+
+                    <!-- Main Entry Point -->
+                    <div class="code-section">
+                        <h4><i class="fas fa-play"></i> Main Entry Point (main.py)</h4>
+                        <div class="code-container">
+                            <button class="copy-btn" onclick="copyCode('code1')">
+                                <i class="fas fa-copy"></i> Copy
+                            </button>
+                            <pre><code id="code1" class="language-python">import sys
+from loguru import logger
+
+from src.core.pinterest_scraper import PinterestScraper
+from src.utils.file_utils import check_folder_exists
+from src import config
+
+# Cấu hình Loguru với màu sắc và file rotation
+logger.remove()
+logger.add(
+    sys.stderr,
+    format="<green>{time:YYYY-MM-DD HH:mm:ss}</green> | <level>{level: <8}</level> | <cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan> - <level>{message}</level>",
+    level="DEBUG",
+    colorize=True
+)
+logger.add(
+    "logs/pinterest_scraper_{time:YYYY-MM-DD}.log",
+    rotation="10 MB",
+    retention="7 days",
+    compression="zip"
+)
+
+def main():
+    """Main function to run the Pinterest image downloader."""
+    logger.info("=== Pinterest Image Downloader Started ===")
+
+    # Validate credentials
+    if not config.USERNAME or not config.PASSWORD or "default" in config.USERNAME:
+        logger.error("Pinterest credentials are not set!")
+        return
+
+    # Get folder name from user
+    folder_name_temp = input("Enter a base name for the download folders: ")
+    
+    # Initialize and run the scraper
+    scraper = PinterestScraper(username=config.USERNAME, password=config.PASSWORD)
+    scraper.run(base_folder_name=folder_name_temp)
+
+    logger.success("=== Process Finished ===")</code></pre>
+                        </div>
+                    </div>
+
+                    <!-- Pinterest Scraper -->
+                    <div class="code-section">
+                        <h4><i class="fas fa-spider"></i> Pinterest Scraper (pinterest_scraper.py)</h4>
+                        <div class="code-container">
+                            <button class="copy-btn" onclick="copyCode('code2')">
+                                <i class="fas fa-copy"></i> Copy
+                            </button>
+                            <pre><code id="code2" class="language-python">import asyncio
+from playwright.async_api import async_playwright, TimeoutError as PlaywrightTimeoutError
+from loguru import logger
+from src import config
+from src.core.downloader import ImageDownloader
+
+class PinterestScraper:
+    def __init__(self, username: str, password: str):
+        self.username = username
+        self.password = password
+        self.downloader = ImageDownloader()
+
+    async def _setup_browser(self):
+        """Khởi tạo Playwright browser với video recording."""
+        self.playwright = await async_playwright().start()
+        self.browser = await self.playwright.chromium.launch(
+            headless=config.HEADLESS,
+            slow_mo=config.SLOW_MO,
+            args=['--disable-notifications', '--no-sandbox']
+        )
+        
+        context_options = {
+            'viewport': {'width': config.VIEWPORT_WIDTH, 'height': config.VIEWPORT_HEIGHT},
+            'user_agent': config.USER_AGENT,
+            'locale': 'en-US'
+        }
+        
+        # Video recording nếu được bật
+        if config.RECORD_VIDEO:
+            context_options['record_video_dir'] = config.VIDEO_DIR
+            context_options['record_video_size'] = config.VIDEO_SIZE
+        
+        self.context = await self.browser.new_context(**context_options)
+        self.context.set_default_timeout(config.ACTION_TIMEOUT_MS)
+        self.page = await self.context.new_page()
+
+    async def login(self):
+        """Đăng nhập Pinterest với Playwright auto-wait."""
+        await self.page.goto(config.BASE_URL, wait_until='domcontentloaded')
+        await self.page.click(config.LOGIN_BUTTON_SELECTOR)
+        await self.page.fill(config.EMAIL_INPUT_SELECTOR, self.username)
+        await self.page.fill(config.PASSWORD_INPUT_SELECTOR, self.password)
+        await self.page.press(config.PASSWORD_INPUT_SELECTOR, 'Enter')
+        await self.page.wait_for_selector(config.AVATAR_SELECTOR, state='visible')
+        logger.success("Login successful")</code></pre>
+                        </div>
+                    </div>
+
+                    <!-- Image Downloader -->
+                    <div class="code-section">
+                        <h4><i class="fas fa-download"></i> Parallel Image Downloader (downloader.py)</h4>
+                        <div class="code-container">
+                            <button class="copy-btn" onclick="copyCode('code3')">
+                                <i class="fas fa-copy"></i> Copy
+                            </button>
+                            <pre><code id="code3" class="language-python">import os
+import requests
+from concurrent.futures import ThreadPoolExecutor, as_completed
+from loguru import logger
+
+class ImageDownloader:
+    """Handles downloading images với parallel processing."""
+    
+    def __init__(self, max_workers: int = 5):
+        self.max_workers = max_workers
+
+    def _download_single_image(self, url: str, folder_name: str) -> tuple:
+        """Download một image từ URL sử dụng requests."""
+        try:
+            highest_res_url = url.split(',')[-1].replace(' 4x', '').strip()
+            filename = highest_res_url.split('/')[-1].split('?')[0]
+            filepath = os.path.join(folder_name, filename)
+
+            if os.path.exists(filepath):
+                return (highest_res_url, True, "Already exists")
+
+            headers = {'User-Agent': config.USER_AGENT}
+            with requests.get(highest_res_url, stream=True, timeout=15, headers=headers) as r:
+                r.raise_for_status()
+                with open(filepath, 'wb') as f:
+                    for chunk in r.iter_content(chunk_size=8192):
+                        f.write(chunk)
+            
+            return (highest_res_url, True, "")
+        except Exception as e:
+            return (url, False, str(e))
+
+    def download_images(self, image_urls: list, folder_name: str):
+        """Downloads images với parallel processing."""
+        unique_urls = sorted(list(set(image_urls)))
+        
+        with ThreadPoolExecutor(max_workers=self.max_workers) as executor:
+            future_to_url = {
+                executor.submit(self._download_single_image, url, folder_name): url 
+                for url in unique_urls
+            }
+            
+            for future in as_completed(future_to_url):
+                url, success, error = future.result()
+                if success:
+                    logger.success(f"Downloaded: {url.split('/')[-1][:50]}")</code></pre>
+                        </div>
+                    </div>
+
+                    <!-- Config -->
+                    <div class="code-section">
+                        <h4><i class="fas fa-cog"></i> Configuration (config.py)</h4>
+                        <div class="code-container">
+                            <button class="copy-btn" onclick="copyCode('code4')">
+                                <i class="fas fa-copy"></i> Copy
+                            </button>
+                            <pre><code id="code4" class="language-python">import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+# --- Credentials ---
+USERNAME = os.getenv("PINTEREST_USERNAME", "default_user@example.com")
+PASSWORD = os.getenv("PINTEREST_PASSWORD", "default_password")
+
+# --- Browser Settings ---
+USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+VIEWPORT_WIDTH = 1200
+VIEWPORT_HEIGHT = 800
+HEADLESS = False
+SLOW_MO = 100
+
+# --- Pinterest Selectors ---
+BASE_URL = "https://www.pinterest.com"
+LOGIN_BUTTON_SELECTOR = "[data-test-id='simple-login-button']"
+EMAIL_INPUT_SELECTOR = "#email"
+PASSWORD_INPUT_SELECTOR = "#password"
+AVATAR_SELECTOR = "[data-test-id='gestalt-avatar-svg']"
+BOARD_TITLE_SELECTOR = "[data-test-id='board-card-title'] h2"
+IMAGE_SELECTOR = "img[srcset]"
+
+# --- Video Recording ---
+RECORD_VIDEO = True
+VIDEO_DIR = "recordings"
+VIDEO_SIZE = {"width": 1280, "height": 720}</code></pre>
+                        </div>
+                    </div>
+
+                    <!-- Tech Stack -->
+                    <div class="tech-stack">
+                        <h4>Công nghệ sử dụng:</h4>
+                        <div class="tech-tags">
+                            <span class="tech-tag python">Python</span>
+                            <span class="tech-tag playwright">Playwright</span>
+                            <span class="tech-tag async">Async/Await</span>
+                            <span class="tech-tag requests">Requests</span>
+                            <span class="tech-tag loguru">Loguru</span>
+                            <span class="tech-tag threading">ThreadPoolExecutor</span>
+                        </div>
+                    </div>
+
+                    <!-- Features List -->
+                    <div class="result-section">
+                        <h4><i class="fas fa-list-check"></i> Tính năng nổi bật:</h4>
+                        <ul style="color: var(--text-secondary); line-height: 1.8; padding-left: 20px;">
+                            <li><strong>Auto-wait:</strong> Playwright tự động đợi elements sẵn sàng trước khi interact</li>
+                            <li><strong>Video Recording:</strong> Ghi lại toàn bộ quá trình scraping để debug</li>
+                            <li><strong>Parallel Download:</strong> Download nhiều ảnh cùng lúc với ThreadPoolExecutor</li>
+                            <li><strong>High Resolution:</strong> Tự động chọn ảnh có độ phân giải cao nhất (4x)</li>
+                            <li><strong>Logging:</strong> Sử dụng Loguru với file rotation và compression</li>
+                            <li><strong>Error Handling:</strong> Xử lý timeout, popup và các lỗi mạng</li>
+                        </ul>
+                    </div>
+
+                    <!-- Result Images Gallery -->
+                    <div class="result-section">
+                        <h4><i class="fas fa-images"></i> Kết quả thu được:</h4>
+                        <div class="image-gallery" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-top: 1rem;">
+                            <div class="gallery-item">
+                                <img src="../assets/images/pinterest_download_playwright/console_download1.png" alt="Console Download 1" style="width: 100%; border-radius: 8px; border: 1px solid var(--border-color);">
+                                <p class="image-caption">Console log quá trình download ảnh</p>
+                            </div>
+                            <div class="gallery-item">
+                                <img src="../assets/images/pinterest_download_playwright/console_download2.png" alt="Console Download 2" style="width: 100%; border-radius: 8px; border: 1px solid var(--border-color);">
+                                <p class="image-caption">Console log tiếp tục download</p>
+                            </div>
+                            <div class="gallery-item">
+                                <img src="../assets/images/pinterest_download_playwright/folders.png" alt="Downloaded Folders" style="width: 100%; border-radius: 8px; border: 1px solid var(--border-color);">
+                                <p class="image-caption">Các thư mục chứa ảnh đã download</p>
+                            </div>
+                            <div class="gallery-item">
+                                <img src="../assets/images/pinterest_download_playwright/txt_static.png" alt="Download Logs" style="width: 100%; border-radius: 8px; border: 1px solid var(--border-color);">
+                                <p class="image-caption">File log URLs đã download</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="additional-projects-placeholder"></div>
+            </section>
+
+            <section class="skills">
+                <h2><i class="fas fa-tools"></i> Kỹ năng chính</h2>
+                <div class="skills-grid">
+                    <div class="skill-item">
+                        <i class="fab fa-python"></i>
+                        <h4>Python Programming</h4>
+                        <p>Playwright, Async/Await, Requests, Loguru</p>
+                    </div>
+                    <div class="skill-item">
+                        <i class="fas fa-spider"></i>
+                        <h4>Web Scraping</h4>
+                        <p>Browser automation, Data extraction, Infinite scroll</p>
+                    </div>
+                    <div class="skill-item">
+                        <i class="fas fa-bolt"></i>
+                        <h4>Parallel Processing</h4>
+                        <p>ThreadPoolExecutor, Concurrent downloads</p>
+                    </div>
+                    <div class="skill-item">
+                        <i class="fas fa-video"></i>
+                        <h4>Video Recording</h4>
+                        <p>Session recording, Debug capabilities</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-python.min.js"></script>
+    <script src="../assets/js/components.js"></script>
+    <script>
+        function copyCode(elementId) {
+            const code = document.getElementById(elementId).textContent;
+            navigator.clipboard.writeText(code).then(() => {
+                const btn = event.target.closest('.copy-btn');
+                const originalText = btn.innerHTML;
+                btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                btn.style.background = '#48bb78';
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                    btn.style.background = '';
+                }, 2000);
+            });
+        }
+
+        // Add animation on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.skill-item').forEach(el => {
+            el.classList.add('animate-on-scroll');
+            observer.observe(el);
+        });
+
+        // Make main project card visible immediately
+        document.querySelectorAll('.project-showcase > .project-card').forEach(el => {
+            el.style.opacity = '1';
+            el.style.transform = 'translateY(0)';
+        });
+    </script>
+</body>
+</html>
