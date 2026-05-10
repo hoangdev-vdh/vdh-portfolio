@@ -16,7 +16,7 @@ function getRootPrefix() {
   const parts = path.replace(/\/[^/]*$/, '').replace(/^\//, '').split('/').filter(Boolean);
   // On GitHub Pages the first segment is the repo name — treat it as depth 0
   // We detect project pages by looking for 'projects' in the path
-  const depth = parts.filter(p => p !== '' && p !== 'vdh-projects-portfolio' && p !== 'vdhhoang06-hub.github.io').length;
+  const depth = parts.filter(p => p !== '' && p !== 'vdh-projects-portfolio' && p !== 'hoangdev-vdh.github.io' && p !== 'vdh-portfolio').length;
   return depth > 0 ? '../'.repeat(depth) : './';
 }
 
