@@ -1,0 +1,34 @@
+<!-- VNExpress Scores Project Image -->
+<svg width="400" height="250" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="scoreGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#3182CE"/>
+      <stop offset="100%" style="stop-color:#2C5282"/>
+    </linearGradient>
+  </defs>
+  <rect width="100%" height="100%" fill="url(#scoreGrad)"/>
+  <rect x="20" y="20" width="360" height="210" fill="white" opacity="0.95" rx="10"/>
+  
+  <!-- Education Icon -->
+  <path d="M 200 50 L 170 65 L 200 80 L 230 65 Z" fill="#3182CE"/>
+  <rect x="185" y="80" width="30" height="25" fill="#3182CE"/>
+  
+  <!-- Score Cards -->
+  <rect x="60" y="110" width="80" height="50" fill="#f7fafc" stroke="#e2e8f0" rx="5"/>
+  <text x="100" y="125" text-anchor="middle" fill="#333" font-family="Arial" font-size="10" font-weight="bold">Toán</text>
+  <text x="100" y="140" text-anchor="middle" fill="#3182CE" font-family="Arial" font-size="16" font-weight="bold">8.5</text>
+  <text x="100" y="155" text-anchor="middle" fill="#666" font-family="Arial" font-size="8">TP.HCM</text>
+  
+  <rect x="160" y="110" width="80" height="50" fill="#f7fafc" stroke="#e2e8f0" rx="5"/>
+  <text x="200" y="125" text-anchor="middle" fill="#333" font-family="Arial" font-size="10" font-weight="bold">Văn</text>
+  <text x="200" y="140" text-anchor="middle" fill="#3182CE" font-family="Arial" font-size="16" font-weight="bold">7.2</text>
+  <text x="200" y="155" text-anchor="middle" fill="#666" font-family="Arial" font-size="8">Hà Nội</text>
+  
+  <rect x="260" y="110" width="80" height="50" fill="#f7fafc" stroke="#e2e8f0" rx="5"/>
+  <text x="300" y="125" text-anchor="middle" fill="#333" font-family="Arial" font-size="10" font-weight="bold">Anh</text>
+  <text x="300" y="140" text-anchor="middle" fill="#3182CE" font-family="Arial" font-size="16" font-weight="bold">9.0</text>
+  <text x="300" y="155" text-anchor="middle" fill="#666" font-family="Arial" font-size="8">Đà Nẵng</text>
+  
+  <text x="200" y="190" text-anchor="middle" fill="#333" font-family="Arial" font-size="16" font-weight="bold">THPT QG Score Tracker</text>
+  <text x="200" y="210" text-anchor="middle" fill="#666" font-family="Arial" font-size="12">Real-time Exam Results Analysis</text>
+</svg>
