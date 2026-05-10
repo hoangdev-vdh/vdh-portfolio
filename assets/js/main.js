@@ -33,6 +33,11 @@ async function loadComponent(placeholderId, componentPath) {
   const url = prefix + componentPath;
 
   try {
+    // Check for file protocol to provide a helpful error message
+    if (window.location.protocol === 'file:') {
+      throw new Error("fetch() cannot load local files using the file:// protocol due to CORS restrictions. Please use a local server like VS Code Live Server.");
+    }
+
     const res = await fetch(url);
     if (!res.ok) throw new Error(`HTTP ${res.status} loading ${url}`);
     const html = await res.text();
