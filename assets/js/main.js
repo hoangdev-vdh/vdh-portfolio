@@ -45,6 +45,7 @@ async function loadComponent(placeholderId, componentPath) {
 
     // After injecting, run any component-specific init
     if (placeholderId === 'header-placeholder') initNav();
+    if (placeholderId === 'footer-placeholder') initFooter();
   } catch (err) {
     console.warn('[VDH] Component load failed:', err.message);
   }
@@ -57,6 +58,25 @@ function initNav() {
   const navLinks = document.querySelector('.nav-links');
 
   if (!nav) return;
+
+  // Fix relative links for sub-pages so they always point back to the root level
+  const prefix = getRootPrefix();
+  
+  // Adjust nav logo link
+  const logoLink = nav.querySelector('.nav-logo');
+  if (logoLink && logoLink.getAttribute('href')?.startsWith('./')) {
+    logoLink.setAttribute('href', logoLink.getAttribute('href').replace('./', prefix));
+  }
+  
+  // Adjust other nav links
+  if (navLinks) {
+    navLinks.querySelectorAll('a').forEach(a => {
+      const href = a.getAttribute('href');
+      if (href && href.startsWith('./')) {
+        a.setAttribute('href', href.replace('./', prefix));
+      }
+    });
+  }
 
   // Scroll shadow
   const onScroll = () => {
@@ -95,6 +115,14 @@ function initNav() {
       // Don't auto-mark Home as active on project pages
     }
   });
+}
+
+/* ── Footer ─────────────────────────────────────────────────── */
+function initFooter() {
+  const currentYearEl = document.getElementById('current-year');
+  if (currentYearEl) {
+    currentYearEl.textContent = new Date().getFullYear();
+  }
 }
 
 /* ── Table of Contents active tracking ──────────────────────── */
