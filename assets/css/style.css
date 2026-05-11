@@ -617,6 +617,9 @@ code, .mono {
 }
 
 /* Article content */
+.article-body {
+  min-width: 0;
+}
 .article-body h2 {
   font-size: 1.65rem;
   margin-bottom: 20px;
