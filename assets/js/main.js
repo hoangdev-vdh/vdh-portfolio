@@ -127,17 +127,23 @@ function initFooter() {
 
 /* ── Table of Contents active tracking ──────────────────────── */
 function initToc() {
-  const tocLinks = document.querySelectorAll('.toc-list a');
+  // Support both old .toc-list pattern and new .toc ul pattern
+  const tocLinks = document.querySelectorAll('.toc-list a, .toc ul a');
   if (!tocLinks.length) return;
 
-  const headings = Array.from(document.querySelectorAll('.article-body h2[id]'));
+  // Track all headings with IDs inside article content
+  const headings = Array.from(document.querySelectorAll(
+    '.article-body h2[id], .article-body h3[id], .prose h2[id], .prose h3[id]'
+  ));
   if (!headings.length) return;
 
   const observer = new IntersectionObserver(entries => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
         tocLinks.forEach(a => a.classList.remove('active'));
-        const active = document.querySelector(`.toc-list a[href="#${entry.target.id}"]`);
+        const active = document.querySelector(
+          `.toc-list a[href="#${entry.target.id}"], .toc ul a[href="#${entry.target.id}"]`
+        );
         if (active) active.classList.add('active');
       }
     });
