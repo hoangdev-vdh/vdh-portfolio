@@ -30,8 +30,56 @@
 
         <div class="projects-grid">
 
+          <!-- ── FEATURED: Instacart Market Basket ── -->
+          <article class="project-card featured fade-in stagger-1" aria-label="Instacart Market Basket Data Pipeline">
+            <div class="project-card-media">
+              <div class="project-card-media-inner">
+                <div class="medallion-badge" aria-hidden="true">
+                  <span class="m-dot bronze"></span>
+                  <span class="m-dot silver"></span>
+                  <span class="m-dot gold"></span>
+                </div>
+                <div class="arch-mini" aria-label="Architecture: Bronze to Silver to Gold">
+                  <span class="arch-mini-box bronze">Bronze</span>
+                  <span class="arch-mini-arr">→</span>
+                  <span class="arch-mini-box silver">Silver</span>
+                  <span class="arch-mini-arr">→</span>
+                  <span class="arch-mini-box gold">Gold ★</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="project-card-body">
+              <div class="project-card-tags">
+                <span class="tag-pill teal">Data Warehouse</span>
+                <span class="tag-pill blue">Apache Airflow</span>
+                <span class="tag-pill gold">Power BI</span>
+                <span class="tag-pill">SQL Server</span>
+                <span class="tag-pill">Python</span>
+                <span class="tag-pill">Docker</span>
+              </div>
+
+              <h3 class="project-card-title">Instacart Market Basket<br>Data Pipeline & Analytics</h3>
+
+              <p class="project-card-desc">
+                An end-to-end Medallion Architecture pipeline on Microsoft SQL Server processing 34M+ transactional records. 
+                Ingests data efficiently via Python Pandas chunks, orchestrated by Dockerized Apache Airflow, and features Clustered Columnstore Indexes for blazing-fast Power BI analytics over a robust Star Schema.
+              </p>
+
+              <div class="project-card-footer">
+                <span class="project-card-meta">Python · T-SQL · Airflow · Power BI</span>
+                <a href="projects/instacart-market-basket/" class="card-link">
+                  Read case study
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <path d="M5 12h14M12 5l7 7-7 7"/>
+                  </svg>
+                </a>
+              </div>
+            </div>
+          </article>
+
           <!-- ── FEATURED: Olist Data Warehouse ── -->
-          <article class="project-card featured fade-in stagger-1" aria-label="Olist Data Warehouse Project">
+          <article class="project-card featured fade-in stagger-2" aria-label="Olist Data Warehouse Project">
             <div class="project-card-media">
               <div class="project-card-media-inner">
                 <div class="medallion-badge" aria-hidden="true">
@@ -81,7 +129,7 @@
           </article>
 
           <!-- ── Coming soon cards ── -->
-          <article class="project-card fade-in stagger-2" aria-label="Web Scraping Collection Project">
+          <article class="project-card fade-in stagger-3" aria-label="Web Scraping Collection Project">
             <div class="project-card-media">
               <div class="project-card-media-inner">
                 <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="var(--ink)" stroke-width="1.5">
@@ -122,7 +170,7 @@
             </div>
           </article>
 
-          <div class="card-coming-soon fade-in stagger-3">
+          <div class="card-coming-soon fade-in stagger-4">
             <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" opacity=".4">
               <circle cx="12" cy="12" r="3"/><path d="M3 12h3m12 0h3M12 3v3m0 12v3"/>
             </svg>

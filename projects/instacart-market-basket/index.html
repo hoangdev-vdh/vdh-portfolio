@@ -1,0 +1,213 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Instacart Market Basket Data Pipeline & Analytics — End-to-end Medallion architecture case study by Vu Duc Hoang." />
+  <title>Instacart Data Pipeline · VDH Portfolio</title>
+
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23141420'/><text y='.9em' font-size='60' x='15' fill='%23F7F5EF' font-family='monospace' font-weight='bold'>V</text></svg>" />
+  <link rel="stylesheet" href="../../assets/css/style.css" />
+</head>
+<body>
+
+  <!-- ── Header ─────────────────────────────────────────────── -->
+  <div id="header-placeholder"></div>
+
+  <!-- ── Project Hero ───────────────────────────────────────── -->
+  <header class="project-hero">
+    <div class="container project-hero-content">
+      <div class="project-hero-eyebrow">
+        <a href="../../">Home</a>
+        <span>/</span>
+        <a href="../../#projects">Projects</a>
+        <span>/</span>
+        <span>Instacart Market Basket</span>
+      </div>
+
+      <h1>Instacart Market Basket<br>Data Pipeline & Analytics</h1>
+
+      <p class="project-hero-desc">
+        A highly scalable Medallion Architecture pipeline on Microsoft SQL Server processing 34M+ transactional records. 
+        Ingests data efficiently via Python Pandas chunks, orchestrated by Dockerized Apache Airflow, and features Clustered Columnstore Indexes for blazing-fast Power BI analytics over a robust Star Schema.
+      </p>
+
+      <div class="project-meta-row">
+        <div class="project-meta-item">
+          <span class="project-meta-label">Type</span>
+          <span class="project-meta-value">Data Engineering & Analytics</span>
+        </div>
+        <div class="project-meta-item">
+          <span class="project-meta-label">Architecture</span>
+          <span class="project-meta-value">Medallion (Bronze → Silver → Gold)</span>
+        </div>
+        <div class="project-meta-item">
+          <span class="project-meta-label">Dataset</span>
+          <span class="project-meta-value">Instacart Market Basket (Kaggle) - 34M+ Rows</span>
+        </div>
+        <div class="project-meta-item">
+          <span class="project-meta-label">Source Code</span>
+          <span class="project-meta-value">
+            <a href="https://github.com/hoangdev-vdh/Instacart_Market_Basket_DW_Project" target="_blank" rel="noopener">GitHub Repository ↗</a>
+          </span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ── Project Content ────────────────────────────────────── -->
+  <main class="project-main">
+    <div class="container project-grid-layout">
+
+      <!-- Left Table of Contents (Sticky) -->
+      <aside class="project-sidebar">
+        <nav class="toc" aria-label="Table of Contents">
+          <h4>Contents</h4>
+          <ul>
+            <li><a href="#overview">Project Overview</a></li>
+            <li><a href="#architecture">System Architecture</a></li>
+            <li><a href="#bronze">🥉 Bronze Layer</a></li>
+            <li><a href="#silver">🥈 Silver Layer</a></li>
+            <li><a href="#gold">🥇 Gold Layer & Star Schema</a></li>
+            <li><a href="#orchestration">⚙️ Tech Stack & Showcase</a></li>
+            <li><a href="#powerbi">📊 Power BI Analytics</a></li>
+          </ul>
+        </nav>
+      </aside>
+
+      <!-- Right Main Content -->
+      <article class="project-article">
+
+        <!-- ══════════ OVERVIEW ══════════ -->
+        <section class="prose">
+          <h2 id="overview">Project Overview</h2>
+          <p class="lead">
+            This project is an end-to-end <strong>Data Engineering and Data Analytics</strong> solution built around the famous Instacart Market Basket dataset. The primary goal is to build a robust, scalable automated data pipeline that processes over <strong>34 million rows</strong> of transactional data, transforming it into a business-ready <strong>Star Schema</strong>.
+          </p>
+          <p>
+            It uncovers actionable insights regarding customer purchasing behaviors. This demonstrates the capability to conceptualize, design, and implement a full-stack data project suitable for real-world enterprise environments.
+          </p>
+        </section>
+        <hr class="section-divider" />
+
+        <!-- ══════════ ARCHITECTURE ══════════ -->
+        <section class="prose">
+          <h2 id="architecture">System Architecture</h2>
+          <p>
+            The project strictly implements the <strong>Medallion Architecture</strong> pattern (Bronze ➔ Silver ➔ Gold), orchestrated dynamically via <strong>Apache Airflow</strong> running in a <strong>Dockerized</strong> environment.
+          </p>
+          <figure class="diagram-wrap fade-in">
+            <img src="../../assets/images/instacart_market_basket/airflow_success.png" alt="Airflow DAG Pipeline" style="width:100%; border-radius:8px; border:1px solid var(--cream-3);" />
+            <figcaption>Airflow DAG Orchestration</figcaption>
+          </figure>
+
+          <h3 id="bronze">🥉 1. Bronze Layer (Raw Data Ingestion)</h3>
+          <ul>
+            <li><strong>Tooling:</strong> Python (Pandas/SQLAlchemy)</li>
+            <li><strong>Methodology:</strong> Scans <code>1_Inbound_Data</code> for raw CSV drops, safely buffers raw data by moving it to <code>2_Processing_Data</code>.</li>
+            <li><strong>Chunking:</strong> To prevent memory crashes when handling the massive <code>order_products</code> dataset (32.4M+ rows), data is read and ingested incrementally using <strong>Pandas Chunks (150,000 rows/chunk)</strong>.</li>
+            <li><strong>Idempotency & Audit:</strong> Appends strict audit trails (<code>_source_file_name</code>, <code>_etl_load_datetime</code>). Processed files are moved to <code>3_Archive_Data</code> or routed to <code>4_Error_Data</code>.</li>
+          </ul>
+
+          <h3 id="silver">🥈 2. Silver Layer (Cleansing & Structuring)</h3>
+          <ul>
+            <li><strong>Tooling:</strong> SQL Server (Stored Procedures)</li>
+            <li><strong>Methodology:</strong> Standardizes data types, logically merges datasets utilizing high-performance <code>UNION ALL</code>.</li>
+            <li><strong>Columnstore Indexes:</strong> Implements <strong>Clustered Columnstore Index (CCI)</strong> on the massive 33.8 million row orders table. This dramatically compresses data and reduces I/O bottleneck, acting as a massive performance tuner for downstream analytical queries.</li>
+          </ul>
+
+          <h3 id="gold">🥇 3. Gold Layer & Star Schema</h3>
+          <p>
+            Constructs a highly optimized Star Schema supporting BI reporting.
+          </p>
+          <ul>
+            <li><strong><code>dim_products</code>:</strong> Denormalizes Snowflake structure (Products + Departments + Aisles).</li>
+            <li><strong><code>dim_users</code>:</strong> Extracted implicitly representing customers with lifetime aggregated logic.</li>
+            <li><strong><code>dim_time_slot</code>:</strong> Derived dimensional logic mapping out 'Weekend vs Weekday' and 'Morning/Afternoon/Evening/Night' buckets.</li>
+            <li><strong><code>fact_order_items</code>:</strong> The optimized heavy-lifting fact table storing every product interaction.</li>
+          </ul>
+          
+          <figure class="diagram-wrap fade-in">
+            <img src="../../assets/images/instacart_market_basket/schema_dbdiagram.png" alt="Star Schema Database Diagram" style="width:100%; border-radius:8px; border:1px solid var(--cream-3);" />
+            <figcaption>Star Schema Design using dbdiagram.io</figcaption>
+          </figure>
+
+        </section>
+        <hr class="section-divider" />
+
+        <!-- ══════════ TECH STACK & PIPELINE ══════════ -->
+        <section class="prose">
+          <h2 id="orchestration">⚙️ Tech Stack & Skills Showcased</h2>
+          <div class="tech-grid">
+            <div class="tech-item">
+              <span class="tech-icon">⚙️</span>
+              <div class="tech-info">
+                <strong>Data Engineering</strong>
+                <span>Apache Airflow (DAGs), Python, Medallion Architecture, Pandas Chunking, Idempotency design</span>
+              </div>
+            </div>
+            <div class="tech-item">
+              <span class="tech-icon">🗄️</span>
+              <div class="tech-info">
+                <strong>Database Ops</strong>
+                <span>Microsoft SQL Server, Stored Procedures, Columnstore Indexes, Star Schema, Query Tuning</span>
+              </div>
+            </div>
+            <div class="tech-item">
+              <span class="tech-icon">📊</span>
+              <div class="tech-info">
+                <strong>Data Analysis</strong>
+                <span>Python (Pandas), SQL Analytics, Market Basket Analysis</span>
+              </div>
+            </div>
+            <div class="tech-item">
+              <span class="tech-icon">🐳</span>
+              <div class="tech-info">
+                <strong>DevOps / Infra</strong>
+                <span>Docker, Docker Compose, Git</span>
+              </div>
+            </div>
+          </div>
+        </section>
+        <hr class="section-divider" />
+
+        <!-- ══════════ POWER BI ══════════ -->
+        <section class="prose">
+          <h2 id="powerbi">📊 Analytical Capabilities & Power BI Dashboard Gallery</h2>
+          <p>
+            The pipeline powers a comprehensive BI reporting suite extracting business patterns like <strong>Product Affinities</strong>, <strong>Reorder Trends</strong>, and <strong>Temporal Patterns</strong>.
+          </p>
+
+          <figure class="img-zoom-wrap fade-in">
+            <img src="../../assets/images/instacart_market_basket/1_executive_summary.png" alt="Executive Summary" loading="lazy" />
+            <figcaption><strong>1. Executive Summary:</strong> High-level KPIs, total orders, revenue proxy, and overall purchasing trends.</figcaption>
+          </figure>
+
+          <figure class="img-zoom-wrap fade-in">
+            <img src="../../assets/images/instacart_market_basket/2_customer360.png" alt="Customer 360" loading="lazy" />
+            <figcaption><strong>2. Customer 360:</strong> Insights into user behaviors, order frequencies, and lifetime value segments.</figcaption>
+          </figure>
+
+          <figure class="img-zoom-wrap fade-in">
+            <img src="../../assets/images/instacart_market_basket/3_product_performance.png" alt="Product Performance" loading="lazy" />
+            <figcaption><strong>3. Product Performance:</strong> Evaluation of best-selling products, category distributions, and reorder rates.</figcaption>
+          </figure>
+
+          <figure class="img-zoom-wrap fade-in">
+            <img src="../../assets/images/instacart_market_basket/4_item_deep_dive.png" alt="Item Deep Dive" loading="lazy" />
+            <figcaption><strong>4. Item Deep Dive & Market Basket:</strong> Association patterns and detailed drill-downs on product relationships.</figcaption>
+          </figure>
+        </section>
+
+      </article>
+
+    </div>
+  </main>
+
+  <!-- ── Footer ─────────────────────────────────────────────── -->
+  <div id="footer-placeholder"></div>
+
+  <!-- Shared JS -->
+  <script src="../../assets/js/main.js"></script>
+</body>
+</html>
