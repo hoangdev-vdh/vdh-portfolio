@@ -48,6 +48,12 @@
 <a href="#topdev">TopDev Scraper</a>
 <a href="#wiki">Wiki Table</a>
 <a href="#bbc">BBC News Converter to Word</a>
+<div class="toc-label" style="margin-top:18px;">Fiverr Client Work</div>
+<a href="#fiverr-acecqa">ACECQA Government Register</a>
+<a href="#fiverr-myfxbook">MyFXBook Trading History</a>
+<a href="#fiverr-omanbayt">OmanBayt Data Migration</a>
+<a href="#fiverr-cambodia-forum">Cambodia Expats Forum</a>
+<a href="#fiverr-multi-scrape">TripAdvisor · SkyscraperCity · FazWaz</a>
 </nav>
 </aside>
 <article class="article-body">
@@ -736,6 +742,242 @@ for elem in article.find_all(["h2", "h3", "p", "figure"], recursive=True):
 # Save Word file
 doc.save("bbc_article.docx")
 print("Finished Saving")</code></pre>
+<hr style="border-top:1px solid #444; margin:40px 0;"/>
+
+<!-- ===================== FIVERR CLIENT WORK ===================== -->
+<div style="background:linear-gradient(135deg,rgba(99,102,241,0.08) 0%,rgba(139,92,246,0.05) 100%);border:1px solid rgba(99,102,241,0.25);border-radius:12px;padding:20px 24px;margin-bottom:40px;">
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+    <span style="color:#a78bfa;font-weight:600;font-size:0.85rem;letter-spacing:0.05em;text-transform:uppercase;">Confidential Client Work</span>
+  </div>
+  <p style="margin:0;color:#9ca3af;font-size:0.9rem;line-height:1.6;">
+    The following projects were delivered to paying clients via Fiverr. Screenshots and raw data are withheld to respect client confidentiality and source-site terms of service. Project scope, technical approach, and key metrics are shared for portfolio purposes.
+  </p>
+</div>
+
+<!-- Project 1 — ACECQA -->
+<h2 id="fiverr-acecqa">ACECQA Government Register Scraper</h2>
+<div style="margin-bottom:20px;">
+  <span class="tag-pill">Python</span>
+  <span class="tag-pill">Requests</span>
+  <span class="tag-pill">BeautifulSoup</span>
+  <span class="tag-pill">Pandas</span>
+  <span class="tag-pill">Cloudflare Bypass</span>
+  <span class="tag-pill">Excel Export</span>
+</div>
+
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:24px;">
+  <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:16px 20px;text-align:center;">
+    <div style="font-size:1.8rem;font-weight:700;color:#a78bfa;">100%</div>
+    <div style="font-size:0.8rem;color:#9ca3af;margin-top:4px;">Email Coverage</div>
+  </div>
+  <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:16px 20px;text-align:center;">
+    <div style="font-size:1.8rem;font-weight:700;color:#a78bfa;">5</div>
+    <div style="font-size:0.8rem;color:#9ca3af;margin-top:4px;">Output Columns</div>
+  </div>
+  <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:16px 20px;text-align:center;">
+    <div style="font-size:1.8rem;font-weight:700;color:#a78bfa;">2</div>
+    <div style="font-size:0.8rem;color:#9ca3af;margin-top:4px;">Excel Deliverables</div>
+  </div>
+</div>
+
+<p>Extracted the complete national register of childcare services from the Australian government's ACECQA portal (<code>acecqa.gov.au</code>). The target site deployed Cloudflare bot-protection to obscure contact information, requiring a session-warm-up and header-spoofing strategy to decode emails server-side before export.</p>
+
+<p><strong>Deliverables:</strong></p>
+<ul>
+  <li><strong>Cleaned XLSX</strong> — Name, Address, State, Phone, Email for every listed service.</li>
+  <li><strong>Master XLSX</strong> — All original government fields (Ratings, Approval Dates, etc.) merged with the scraped emails.</li>
+</ul>
+
+<p><strong>Key challenges:</strong></p>
+<ul>
+  <li>Cloudflare email obfuscation — decoded client-side encoded addresses by replicating the CF decoding algorithm in Python.</li>
+  <li>Verified that blank phone/state fields are genuinely absent on the source, not scraping gaps.</li>
+  <li>Delivered both a minimal "requested columns" file and a full master dataset for future reference.</li>
+</ul>
+
+<p># No code found</p>
+
+<hr style="border-top:1px solid #444; margin:40px 0;"/>
+
+<!-- Project 2 — MyFXBook -->
+<h2 id="fiverr-myfxbook">MyFXBook Trading History Extractor</h2>
+<div style="margin-bottom:20px;">
+  <span class="tag-pill">Python</span>
+  <span class="tag-pill">Playwright</span>
+  <span class="tag-pill">Pagination</span>
+  <span class="tag-pill">Deduplication</span>
+  <span class="tag-pill">CSV Export</span>
+  <span class="tag-pill">Anti-Bot Handling</span>
+</div>
+
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:24px;">
+  <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:16px 20px;text-align:center;">
+    <div style="font-size:1.8rem;font-weight:700;color:#34d399;">236</div>
+    <div style="font-size:0.8rem;color:#9ca3af;margin-top:4px;">Pages Scraped</div>
+  </div>
+  <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:16px 20px;text-align:center;">
+    <div style="font-size:1.8rem;font-weight:700;color:#34d399;">ISO 8601</div>
+    <div style="font-size:0.8rem;color:#9ca3af;margin-top:4px;">Date Format</div>
+  </div>
+  <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:16px 20px;text-align:center;">
+    <div style="font-size:1.8rem;font-weight:700;color:#34d399;">0</div>
+    <div style="font-size:0.8rem;color:#9ca3af;margin-top:4px;">Duplicate Rows</div>
+  </div>
+</div>
+
+<p>Built a Playwright automation script to extract the complete historical trade log from a public MyFXBook account profile (<code>myfxbook.com/members/RockwellFX/ophir/11951077</code>). The page renders trade data dynamically and serves interstitial ad pop-ups that block the automation flow.</p>
+
+<p><strong>Deliverables:</strong></p>
+<ul>
+  <li>Single deduplicated CSV of all ~236 pages of trade history.</li>
+  <li>Pre-formatted columns matching a client-approved sample: ISO dates, raw seconds for duration, numeric prices and gain.</li>
+  <li>Playwright <code>.py</code> source script delivered as-is.</li>
+</ul>
+
+<p><strong>Key challenges:</strong></p>
+<ul>
+  <li>Pop-up ad overlay on load — script includes a 15-second manual intervention window; bot auto-resumes after the user dismisses the ad and clicks the History tab.</li>
+  <li>Deduplication across paginated results where page boundaries occasionally repeated the last row of the previous page.</li>
+</ul>
+
+<p># No code found</p>
+
+<hr style="border-top:1px solid #444; margin:40px 0;"/>
+
+<!-- Project 3 — OmanBayt -->
+<h2 id="fiverr-omanbayt">OmanBayt Real Estate Data Migration Bot</h2>
+<div style="margin-bottom:20px;">
+  <span class="tag-pill">Python</span>
+  <span class="tag-pill">Playwright</span>
+  <span class="tag-pill">API Interception</span>
+  <span class="tag-pill">WAF Bypass</span>
+  <span class="tag-pill">Laravel Admin</span>
+  <span class="tag-pill">Data Transformation</span>
+</div>
+
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:24px;">
+  <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:16px 20px;text-align:center;">
+    <div style="font-size:1.8rem;font-weight:700;color:#f59e0b;">3</div>
+    <div style="font-size:0.8rem;color:#9ca3af;margin-top:4px;">Pipeline Stages</div>
+  </div>
+  <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:16px 20px;text-align:center;">
+    <div style="font-size:1.8rem;font-weight:700;color:#f59e0b;">25 MB</div>
+    <div style="font-size:0.8rem;color:#9ca3af;margin-top:4px;">Media File Limit Handled</div>
+  </div>
+  <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:16px 20px;text-align:center;">
+    <div style="font-size:1.8rem;font-weight:700;color:#f59e0b;">Full</div>
+    <div style="font-size:0.8rem;color:#9ca3af;margin-top:4px;">End-to-End Automation</div>
+  </div>
+</div>
+
+<p>Designed and delivered a complete 3-stage data migration pipeline to move "Top Projects" listings from OmanReal into a Laravel-based admin panel at OmanBayt. The pipeline covered API extraction, field mapping transformation, and fully automated browser-based data entry with media upload.</p>
+
+<p><strong>Deliverables:</strong></p>
+<ul>
+  <li><strong>Data Extractor</strong> — Python scraper using API interception and session warm-up to pull project details, units, amenities, and image links from OmanReal's internal JSON APIs.</li>
+  <li><strong>Visual Automation Uploader</strong> — Playwright bot that logs into <code>admin.omanbayt.com</code>, fills the "Add Property" form, uploads images, and injects Payment Plans dynamically into the Floor Plans section.</li>
+  <li><strong>README Documentation</strong> — Step-by-step guides for both tools so the client's dev team can maintain and re-run independently.</li>
+</ul>
+
+<p><strong>Key challenges:</strong></p>
+<ul>
+  <li>WAF (Web Application Firewall) bypass on the target admin panel — solved with stealth Playwright headers and request fingerprint spoofing.</li>
+  <li>25 MB upload ceiling for media files — handled with pre-upload compression and chunked retry logic.</li>
+  <li>Dynamic Payment Plan injection — scraped plan data was serialized and injected directly into the Floor Plans section via DOM manipulation, as no dedicated UI field existed.</li>
+</ul>
+
+<p># No code found</p>
+
+<hr style="border-top:1px solid #444; margin:40px 0;"/>
+
+<!-- Project 4 — Cambodia Forum -->
+<h2 id="fiverr-cambodia-forum">Cambodia Expats Online — Full Forum Extraction</h2>
+<div style="margin-bottom:20px;">
+  <span class="tag-pill">Python</span>
+  <span class="tag-pill">Requests</span>
+  <span class="tag-pill">Proxy Rotation</span>
+  <span class="tag-pill">Rate Limiting</span>
+  <span class="tag-pill">CSV Export</span>
+  <span class="tag-pill">Stealth Crawling</span>
+</div>
+
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin-bottom:24px;">
+  <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:16px 20px;text-align:center;">
+    <div style="font-size:1.8rem;font-weight:700;color:#60a5fa;">46,991</div>
+    <div style="font-size:0.8rem;color:#9ca3af;margin-top:4px;">Topics Extracted</div>
+  </div>
+  <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:16px 20px;text-align:center;">
+    <div style="font-size:1.8rem;font-weight:700;color:#60a5fa;">621,235</div>
+    <div style="font-size:0.8rem;color:#9ca3af;margin-top:4px;">Posts Extracted</div>
+  </div>
+  <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:16px 20px;text-align:center;">
+    <div style="font-size:1.8rem;font-weight:700;color:#60a5fa;">21</div>
+    <div style="font-size:0.8rem;color:#9ca3af;margin-top:4px;">Category Folders</div>
+  </div>
+  <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:16px 20px;text-align:center;">
+    <div style="font-size:1.8rem;font-weight:700;color:#60a5fa;">14 days</div>
+    <div style="font-size:0.8rem;color:#9ca3af;margin-top:4px;">Low-and-Slow Runtime</div>
+  </div>
+</div>
+
+<p>Performed a complete historical extraction of <code>cambodiaexpatsonline.com</code> — one of the largest expat forums in Southeast Asia — for a client market research project. The crawl was deliberately run in "low-and-slow" mode over 14 days to stay under the site's admin monitoring thresholds and avoid IP bans.</p>
+
+<p><strong>Deliverables:</strong></p>
+<ul>
+  <li>621,235 posts organized into 21 category-specific CSV folders covering all publicly accessible content.</li>
+  <li>Each row: Topic Title, Post Content, Comments, Date.</li>
+  <li>~35,000 posts and ~8,500 topics in private/premium categories (VIP Nightlife, Darknet Cambodia News) were documented as out-of-scope with a clear explanation for the client.</li>
+</ul>
+
+<p><strong>Key challenges:</strong></p>
+<ul>
+  <li>Custom proxy-rotation architecture with randomized delays to bypass server-side admin monitoring.</li>
+  <li>Maintaining session continuity across a 14-day crawl window with automatic resume-on-failure checkpointing.</li>
+  <li>Category-level folder organization for 21 distinct sections with consistent CSV schema.</li>
+</ul>
+
+<p># No code found</p>
+
+<hr style="border-top:1px solid #444; margin:40px 0;"/>
+
+<!-- Project 5 — Multi-site -->
+<h2 id="fiverr-multi-scrape">TripAdvisor · SkyscraperCity · FazWaz</h2>
+<div style="margin-bottom:20px;">
+  <span class="tag-pill">Python</span>
+  <span class="tag-pill">Playwright</span>
+  <span class="tag-pill">BeautifulSoup</span>
+  <span class="tag-pill">Pagination Bypass</span>
+  <span class="tag-pill">Nested Thread Parsing</span>
+  <span class="tag-pill">Multi-Currency</span>
+  <span class="tag-pill">CSV Export</span>
+</div>
+
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin-bottom:24px;">
+  <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:16px 20px;text-align:center;">
+    <div style="font-size:1.8rem;font-weight:700;color:#f472b6;">32,062</div>
+    <div style="font-size:0.8rem;color:#9ca3af;margin-top:4px;">TripAdvisor Topics</div>
+  </div>
+  <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:16px 20px;text-align:center;">
+    <div style="font-size:1.8rem;font-weight:700;color:#f472b6;">695</div>
+    <div style="font-size:0.8rem;color:#9ca3af;margin-top:4px;">SkyscraperCity Threads</div>
+  </div>
+  <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:16px 20px;text-align:center;">
+    <div style="font-size:1.8rem;font-weight:700;color:#f472b6;">181,408</div>
+    <div style="font-size:0.8rem;color:#9ca3af;margin-top:4px;">FazWaz Listings</div>
+  </div>
+</div>
+
+<p>A three-target research dataset project for a Southeast Asia market analysis client. Each site presented distinct technical challenges requiring a separate scraping strategy.</p>
+
+<p><strong>TripAdvisor Cambodia Forum</strong> — 32,062 topics extracted via deep pagination bypass. TripAdvisor applies aggressive bot detection on high page-depth navigation; solved by spoofing browser fingerprints with Playwright and inserting realistic scroll/interaction delays.</p>
+
+<p><strong>SkyscraperCity Cambodia Threads</strong> — 695 main topics with full nested parent-child thread structure captured using <code>post_id</code> / <code>parent_post_id</code> mapping. Delivered as a single CSV where indentation level is encoded numerically rather than visually.</p>
+
+<p><strong>FazWaz Real Estate</strong> — 181,408 listings (114,165 Sale + 67,243 Rent) scraped across all Cambodia property types. Multi-currency normalization required: server-side forced-USD cookies were overridden by the API for some locales, so exchange-rate conversion (1 USD ≈ 26,300 VND) was applied at the transform stage. Null bedroom/bathroom values for non-residential listings (land, factories) were preserved and documented.</p>
+
+<p># No code found</p>
+
 <hr style="border-top:1px solid #444; margin:40px 0;"/></article>
 </div>
 </div>
